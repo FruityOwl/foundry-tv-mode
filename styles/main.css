@@ -1,0 +1,51 @@
+/* Everything is hidden unless it is listed here, so windows and widgets from any
+   module disappear too. Left on screen: the scene, the Cast & Scene stage and the
+   eye button. A modal dialog also stays: while one is open the browser blocks the
+   rest of the page, so hiding it would leave the eye button impossible to click. */
+body.tvmode-ui-hidden > *:not(canvas#board, #fvn-stage, #tvmode-toggle, dialog:modal) {
+  display: none !important;
+}
+
+/* The same look as the Cast & Scene Quick Access launcher. */
+button#tvmode-toggle {
+  position: fixed;
+  z-index: 100000;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: #f4e7c2;
+  background: radial-gradient(circle at 35% 28%, rgba(126, 99, 54, 0.95), rgba(32, 25, 20, 0.98) 70%);
+  border: 1px solid rgba(224, 184, 101, 0.72);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+button#tvmode-toggle:hover,
+button#tvmode-toggle:focus-visible {
+  color: #fff4cf;
+  background: radial-gradient(circle at 35% 28%, rgba(126, 99, 54, 0.95), rgba(32, 25, 20, 0.98) 70%);
+  border-color: rgba(224, 184, 101, 0.72);
+  box-shadow: 0 0 0 2px rgba(218, 172, 74, 0.24), 0 4px 18px rgba(0, 0, 0, 0.5);
+  outline: none;
+}
+
+button#tvmode-toggle.is-dragging {
+  cursor: grabbing;
+  transform: scale(1.04);
+  box-shadow: 0 0 0 2px rgba(218, 172, 74, 0.28), 0 7px 22px rgba(0, 0, 0, 0.58);
+}
+
+button#tvmode-toggle i {
+  margin: 0;
+  pointer-events: none;
+}

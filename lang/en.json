@@ -1,0 +1,9 @@
+{
+  "TVMODE": {
+    "TvUser": "TV account",
+    "TvUserHint": "This account starts with the whole interface hidden and gets a floating eye button to show or hide it. Other accounts are not affected.",
+    "NoTvUser": "None",
+    "HideInterface": "Hide the interface",
+    "ShowInterface": "Show the interface"
+  }
+}
