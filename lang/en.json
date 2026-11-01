@@ -3,6 +3,8 @@
     "TvUser": "TV account",
     "TvUserHint": "This account starts with the whole interface hidden and gets a floating eye button to show or hide it. Other accounts are not affected.",
     "NoTvUser": "None",
+    "FitScene": "Fit each scene to the screen height",
+    "FitSceneHint": "When a scene opens on the TV account, it is centred and zoomed so its top and bottom edges meet the top and bottom of the screen. Other accounts are not affected.",
     "HideInterface": "Hide the interface",
     "ShowInterface": "Show the interface"
   }

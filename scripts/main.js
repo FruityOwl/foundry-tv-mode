@@ -1,9 +1,11 @@
 // TV Mode
 // Hides the whole Foundry interface for one chosen account, so a screen can
 // show the scene and nothing else. A floating eye button brings it back.
+// Each scene that opens there is zoomed to fill the screen from top to bottom.
 
 const MODULE_ID = "foundry-tv-mode";
 const TV_USER_SETTING = "tvUser";
+const FIT_SCENE_SETTING = "fitScene";
 const NO_TV_USER = "none";
 const HIDDEN_KEY = `${MODULE_ID}.uiHidden`;
 const POSITION_KEY = `${MODULE_ID}.buttonPosition`;
@@ -21,6 +23,7 @@ class TvMode {
   static button = null;
   static drag = null;
   static suppressClick = false;
+  static fittedHeight = null;
 
   static get isTvUser() {
     return game.settings.get(MODULE_ID, TV_USER_SETTING) === game.userId;
@@ -52,6 +55,26 @@ class TvMode {
   static syncCanvas() {
     const controls = globalThis.canvas?.controls;
     if (controls) controls.visible = !this.isHidden;
+  }
+
+  // Centres the scene and zooms until its top and bottom edges meet the screen's.
+  // This only moves the view in this browser; nothing is saved to the scene.
+  static fitScene() {
+    if (!this.isTvUser || !game.settings.get(MODULE_ID, FIT_SCENE_SETTING)) return;
+    const rect = globalThis.canvas?.dimensions?.sceneRect;
+    if (!rect) return;
+    this.fittedHeight = window.innerHeight;
+    canvas.pan({
+      x: rect.x + (rect.width / 2),
+      y: rect.y + (rect.height / 2),
+      scale: window.innerHeight / rect.height
+    });
+  }
+
+  static onResize() {
+    this.place();
+    // sync() sends a resize event without the window changing, which must not undo a manual zoom.
+    if (window.innerHeight !== this.fittedHeight) this.fitScene();
   }
 
   static toggle() {
@@ -171,12 +194,25 @@ Hooks.once("i18nInit", () => {
     type: String,
     choices: { [NO_TV_USER]: t("NoTvUser"), ...users },
     default: NO_TV_USER,
-    onChange: () => TvMode.sync()
+    onChange: () => {
+      TvMode.sync();
+      TvMode.fitScene();
+    }
   });
-  window.addEventListener("resize", () => TvMode.place());
+  game.settings.register(MODULE_ID, FIT_SCENE_SETTING, {
+    name: t("FitScene"),
+    hint: t("FitSceneHint"),
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: () => TvMode.fitScene()
+  });
+  window.addEventListener("resize", () => TvMode.onResize());
   TvMode.sync();
 });
 
 Hooks.on("canvasReady", () => {
   if (TvMode.isHidden) TvMode.syncCanvas();
+  TvMode.fitScene();
 });
